@@ -46,3 +46,20 @@
                                 :designers [{:name "Kris Burm",
                                              :games [{:name "Zertz"}]}]}}}
            (lacinia/execute schema query-string nil nil)))))
+
+(deftest can-run-a-graphql-query-game-by-id-6
+  (let [schema (s/load-schema dummy-component)
+        query-string "{ game_by_id(id: \"1237\") { name rating_summary { count average }}}"]
+    (is (= {:data {:game_by_id {:name "7 Wonders: Duel",
+                                :rating_summary {:count 3,
+                                                 :average 4.333333333333333}}}}
+           (lacinia/execute schema query-string nil nil)))))
+
+(deftest can-run-a-graphql-query-member-by-id-1
+  (let [schema (s/load-schema dummy-component)
+        query-string "{ member_by_id(id: \"1410\") { member_name ratings { game { name } rating }}}"]
+    (is (= {:data {:member_by_id {:member_name "bleedingedge",
+                                  :ratings [{:game {:name "Zertz"}, :rating 5}
+                                            {:game {:name "Tiny Epic Galaxies"}, :rating 4}
+                                            {:game {:name "7 Wonders: Duel"}, :rating 4}]}}}
+           (lacinia/execute schema query-string nil nil)))))
